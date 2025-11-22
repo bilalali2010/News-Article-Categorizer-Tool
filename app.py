@@ -14,15 +14,20 @@ MODEL_FILE = "news_model.pkl"
 LABELS_FILE = "labels.pkl"
 
 # -------------------------
+# Map raw dataset labels to friendly full names
+# -------------------------
+label_map = {
+    "rec.sport.baseball": "Baseball / Sports",
+    "sci.space": "Space / Science",
+    "talk.politics.mideast": "Middle East Politics",
+    "comp.sys.mac.hardware": "Mac Hardware / Computers"
+}
+
+# -------------------------
 # Function to train model
 # -------------------------
 def train_and_save_model():
-    categories = [
-        'rec.sport.baseball',
-        'sci.space',
-        'talk.politics.mideast',
-        'comp.sys.mac.hardware'
-    ]
+    categories = list(label_map.keys())
 
     data = fetch_20newsgroups(subset="all", categories=categories, remove=("headers","footers","quotes"))
     X_train, X_test, y_train, y_test = train_test_split(
@@ -69,9 +74,12 @@ if st.button("Categorize"):
         idx = probs.argmax()
         confidence = probs[idx]
 
-        st.success(f"### Category: **{labels[idx]}**")
+        raw_label = labels[idx]               # e.g., rec.sport.baseball
+        friendly_label = label_map[raw_label]
+
+        st.success(f"### Category: **{friendly_label}**")
         st.write(f"Confidence: **{confidence:.2f}**")
 
         st.write("### All Categories Probabilities")
         for i, lbl in enumerate(labels):
-            st.write(f"{lbl}: {probs[i]:.2f}")
+            st.write(f"{label_map[lbl]}: {probs[i]:.2f}")
