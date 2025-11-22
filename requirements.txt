@@ -1,7 +1,6 @@
 streamlit
-sklearn
+scikit-learn
 pandas
 numpy
 joblib
 transformers
-torch
